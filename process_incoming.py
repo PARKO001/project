@@ -4,6 +4,13 @@ from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 import pandas as pd
 import json
+from google import genai
+from google.genai import types
+import config
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_embedding(text_list):
     response = requests.post("http://localhost:11434/api/embed", json={"model": "bge-m3", "input": text_list})
@@ -12,6 +19,21 @@ def get_embedding(text_list):
 def inference(prompt):
     response = requests.post("http://localhost:11434/api/generate", json={"model": "llama3.2", "prompt": prompt, "stream": False})
     return response.json()
+
+client = genai.Client()
+def inference_gemini(prompt):
+    print("Thinking...")
+    response = client.models.generate_content(
+        model='gemini-2.5-flash',
+        contents=prompt,
+    )
+    return response.text
+
+# def inference_openai(prompt):
+#     response = client.responses.create(
+#         model="gpt-5",
+#         input=prompt)
+#     return response.output_text
 
 # Load the saved dataframe
 df = joblib.load('chunk_embeddings.joblib')
@@ -24,20 +46,23 @@ question_embedding = get_embedding([question])[0]
 #Find similarities of the question embedding with the chunk embeddings
 similarities = cosine_similarity([question_embedding], df['embedding'].tolist())[0]
 # print(similarities)
-top_results = 100
+top_results = 5
 top_n_indices = similarities.argsort()[::-1][:top_results]
 top_n_results = df.iloc[top_n_indices]
 # print(top_n_results[["audio", "chunk_id", "text"]])
 
 prompt = f''' I've done some lab tests for on very famous items in indian food industry. Here are video subtitle chunks containing video title(audio), chunk_id, text, start and end time of the chunk. Here are the chunks:
 
-{top_n_results[["audio", "chunk_id", "start", "end", "text"]].to_json(orient="records")}
+{top_n_results[["title", "chunk_id", "start", "end", "text"]].to_json(orient="records")}
 --------------------
 "{question}"
 User asked this question related to video chunks, I want you to answer user's questions based on these chunks. If you don't find any relevant information in the chunks, please say "Please ask question from the provided context".
 '''
 
-response = inference(prompt)["response"]
+# response = inference(prompt)["response"]
+# print(response)
+
+response = inference_gemini(prompt)
 print(response)
 
 with open("response.txt", "w", encoding="utf-8") as f:
