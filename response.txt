@@ -1,0 +1,15 @@
+Based on the provided video chunks, the following items have failed the tests for sure:
+
+1. Milk - The chunk says "all three brands failed in Microbiological parameters."
+
+2. Dmart spices - The chunk says "And they failed." 
+
+3. Irctc (type of food) - The chunk says "food hygiene fails because of the people," and also mentions that it has a huge, huge failure.
+
+4. Maggi noodles - The chunk says "that too has passed testing of aflatoxins and heavy metals" does not indicate failure but "stale, low quality food." 
+
+5. McDonald's ice cream - The chunk says "The hygiene of the staff is weak."
+
+6. One product of protein 2 (brand name not mentioned) - The chunk says "then see, I will say one negative of this product," and then mentions a negative about it.
+
+7. Irctc (type of food again) - The chunk says "that too has passed testing of aflatoxins and heavy metals" does not indicate failure but "like watery dal, poor quality food."
