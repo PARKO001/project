@@ -2,6 +2,7 @@ import requests
 import os
 import json
 import pandas as pd
+import joblib
 
 def get_embedding(text_list):
     response = requests.post("http://localhost:11434/api/embed", json={"model": "bge-m3", "input": text_list})
@@ -21,4 +22,6 @@ for json_file in jsons:
         chunk['embedding'] = embedding[i]
         my_dicts.append(chunk)
 df = pd.DataFrame.from_records(my_dicts)
-print(df)
+
+# Save this dataframe using joblib
+joblib.dump(df, 'chunk_embeddings.joblib')
